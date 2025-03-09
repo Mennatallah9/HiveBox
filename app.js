@@ -1,9 +1,12 @@
-const fs = require('fs');
+const tempRoutes = require('./routes/tempRoutes')
+const versionRoutes = require('./routes/versionRoutes')
+const express = require('express')
 
-function printVersion() {
-    const packageFile = JSON.parse(fs.readFileSync("package.json", "utf-8"));
-    console.log(`v${packageFile.version}`);
-    process.exit(0);
-}
+const app = new express();
 
-printVersion();
+app.use('/temperature', tempRoutes);
+app.use('/version', versionRoutes);
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+})
