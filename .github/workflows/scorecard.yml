@@ -53,7 +53,11 @@ jobs:
           # For private repositories:
           #   - `publish_results` will always be set to `false`, regardless
           #     of the value entered here.
-          # publish_results: true
+          publish_results: true
+
+      - name: Debug Scorecard Output
+        run: cat results.sarif || echo "SARIF file is empty!"
+
 
       # Upload the results as artifacts (optional). Commenting out will disable uploads of run results in SARIF
       # format to the repository Actions tab.
