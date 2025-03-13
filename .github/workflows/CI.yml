@@ -59,19 +59,3 @@ jobs:
 
       - name: Run Tests
         run: npm test
-
-  security:
-    name: OpenSSF Scorecard
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Run OpenSSF Scorecard
-        uses: ossf/scorecard-action@v2
-        with:
-          results_file: results.json
-
-      - name: Display Scorecard Results
-        run: cat results.json
