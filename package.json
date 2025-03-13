@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint ."
   },
   "author": "Mennatallah Ashraf",
   "license": "ISC",
@@ -15,6 +16,9 @@
     "nodemon": "^3.1.9"
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "eslint": "^9.22.0",
+    "globals": "^16.0.0",
     "jest": "^29.7.0",
     "supertest": "^7.0.0"
   }
