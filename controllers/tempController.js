@@ -1,11 +1,12 @@
 const axios = require('axios');
+require('dotenv').config();
 
 const getTemp = async (req, res) => {
     const currentDate = new Date().toISOString();
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
     const oneHourAgoStr = oneHourAgo.toISOString();
 
-    const SENSEBOX_API_URL = `https://api.opensensemap.org/boxes?date=${oneHourAgoStr},${currentDate}&phenomenon=temperature&format=json`;
+    const SENSEBOX_API_URL = `${process.env.SENSEBOX_API_BASE_URL}?date=${oneHourAgoStr},${currentDate}&phenomenon=temperature&format=json`;
 
     try {
         const response = await axios.get(SENSEBOX_API_URL);
@@ -45,10 +46,18 @@ const getTemp = async (req, res) => {
         }
 
         const averageTemperature = temperatureSum / validBoxCount;
+        let status;
+        if (averageTemperature<10){
+            status = "Too Cold";
+        }else if(averageTemperature<37){
+            status = "Good";
+        }else{
+            status = "Too Hot";
+        }
 
         res.status(200).json({
             averageTemperature: averageTemperature.toFixed(2),
-            unit: "°C",
+            status: status
         });
 
     } catch (error) {
