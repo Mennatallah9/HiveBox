@@ -17,7 +17,6 @@ describe('Temperature Controller', () => {
                     sensors: [
                         {
                             title: "Temperature",
-                            unit: "°C",
                             lastMeasurement: {
                                 value: "25.5",
                                 createdAt: new Date().toISOString(),
@@ -31,7 +30,7 @@ describe('Temperature Controller', () => {
         const response = await request(app).get('/temperature');
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('averageTemperature', "25.50");
-        expect(response.body).toHaveProperty('unit', "°C");
+        expect(response.body).toHaveProperty('status', "Good");
     });
 
     test('should return 404 if no valid temperature data is found', async () => {
