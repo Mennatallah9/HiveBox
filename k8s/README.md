@@ -13,10 +13,10 @@ This document explains how to deploy the HiveBox application to a local Kubernet
 The HiveBox application is deployed to a local Kubernetes cluster using KIND with Ingress support. Follow these steps to create the cluster:
 
 ```bash
-kind create cluster --name hivebox --config kind-config.yaml
+kind create cluster --name hivebox --config k8s/kind-config.yml
 ```
 
-The `kind-config.yaml` file contains the necessary configuration to enable Ingress support.
+The `kind-config.yml` file contains the necessary configuration to enable Ingress support.
 
 After creating the cluster, install the Ingress-Nginx controller:
 
