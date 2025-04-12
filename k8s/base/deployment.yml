@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hivebox
+  namespace: hivebox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hivebox
+  template:
+    metadata:
+      labels:
+        app: hivebox
+    spec:
+      containers:
+        - name: hivebox
+          image: mennahaggag/hivebox:latest
+          ports:
+          - containerPort: 3000
+            name: http
+          envFrom:
+          - configMapRef:
+              name: hivebox-config
+          resources:
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"

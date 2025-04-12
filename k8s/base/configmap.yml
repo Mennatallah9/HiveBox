@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hivebox-config
+  namespace: hivebox
+data:
+  SENSEBOX_API_BASE_URL: "https://api.opensensemap.org/boxes"
+  PORT: "3000"
