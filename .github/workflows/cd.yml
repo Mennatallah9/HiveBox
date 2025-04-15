@@ -10,13 +10,21 @@ jobs:
   deploy:
     name: Deploy HiveBox Application
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: docker.io
+      IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/hivebox
     steps:
       - uses: actions/checkout@v3
+      - name: Set Image Tag
+        id: vars
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_EN
+        
       - name: Build and Push Docker Image
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/hivebox:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/hivebox:latest
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${SHORT_SHA} .
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:${SHORT_SHA}
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
