@@ -19,21 +19,21 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/hivebox:latest
 
       - name: Install kubectl
-        uses: azure/setup-kubectl@v3
+      - uses: azure/setup-kubectl@v3
         with:
           version: 'latest'
 
       - name: Install KIND
-        uses: helm/kind-action@v1.8.0
+      - uses: helm/kind-action@v1.8.0
         with:
           cluster_name: hivebox
           config: k8s/kind-config.yml
 
       - name: Wait for KIND cluster to be ready
-        run: sleep 30
+      - run: sleep 30
 
       - name: Install Ingress-NGINX Controller
-        run: |
+      - run: |
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
           echo "Waiting for ingress controller to be ready..."
           kubectl wait --namespace ingress-nginx \
@@ -42,22 +42,22 @@ jobs:
             --timeout=180s
 
       - name: Deploy HiveBox Application to KIND
-        run: kubectl apply -k k8s/base/
+      - run: kubectl apply -k k8s/base/
 
       - name: Test Version Endpoint
-        run: |
+      - run: |
           echo "Waiting for app to start..."
           sleep 20
           curl --retry 5 --retry-delay 10 http://localhost/version
 
       - name: Test Temperature Endpoint
-        run: curl --retry 5 --retry-delay 10 http://localhost/temperature
+      - run: curl --retry 5 --retry-delay 10 http://localhost/temperature
 
       - name: Test Metrics Endpoint
-        run: curl --retry 5 --retry-delay 10 http://localhost/metrics
+      - run: curl --retry 5 --retry-delay 10 http://localhost/metrics
 
       - name: Print All Pods
-        run: kubectl get pods -A
+      - run: kubectl get pods -A
 
       - name: Print All Services
-        run: kubectl get svc -A
+      - run: kubectl get svc -A
