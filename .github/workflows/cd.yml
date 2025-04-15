@@ -8,6 +8,7 @@ on:
       - main
 jobs:
   deploy:
+    name: Deploy HiveBox Application
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,9 +28,6 @@ jobs:
         with:
           cluster_name: hivebox
           config: k8s/kind-config.yml
-
-      - name: Wait for KIND cluster to be ready
-        run: sleep 30
 
       - name: Install Ingress-NGINX Controller
         run: |
