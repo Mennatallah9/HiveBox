@@ -8,11 +8,56 @@ on:
       - main
 jobs:
   deploy:
+    name: Deploy HiveBox Application
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
       - name: Build and Push Docker Image
+        uses: actions/checkout@v3
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker build -t ${{ secrets.DOCKER_USERNAME }}/hivebox:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/hivebox:latest
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Install KIND
+        uses: helm/kind-action@v1.8.0
+        with:
+          cluster_name: hivebox
+          config: k8s/kind-config.yml
+
+      - name: Wait for KIND cluster to be ready
+        run: sleep 30
+
+      - name: Install Ingress-NGINX Controller
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+          echo "Waiting for ingress controller to be ready..."
+          kubectl wait --namespace ingress-nginx \
+            --for=condition=ready pod \
+            --selector=app.kubernetes.io/component=controller \
+            --timeout=180s
+
+      - name: Deploy HiveBox Application to KIND
+        run: kubectl apply -k k8s/base/
+
+      - name: Test Version Endpoint
+        run: |
+          echo "Waiting for app to start..."
+          sleep 20
+          curl --retry 5 --retry-delay 10 http://localhost/version
+
+      - name: Test Temperature Endpoint
+        run: curl --retry 5 --retry-delay 10 http://localhost/temperature
+
+      - name: Test Metrics Endpoint
+        run: curl --retry 5 --retry-delay 10 http://localhost/metrics
+
+      - name: Print All Pods
+        run: kubectl get pods -A
+
+      - name: Print All Services
+        run: kubectl get svc -A
