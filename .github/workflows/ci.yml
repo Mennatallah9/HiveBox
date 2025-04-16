@@ -46,6 +46,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Set environment variables
+        run: echo "SENSEBOX_API_BASE_URL=${{ secrets.SENSEBOX_API_BASE_URL }}" >> $GITHUB_ENV
+        
       - name: Checkout Repository
         uses: actions/checkout@v4
 
