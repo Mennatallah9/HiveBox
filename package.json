@@ -6,6 +6,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "test": "jest",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
     "lint": "eslint ."
   },
   "author": "Mennatallah Ashraf",
